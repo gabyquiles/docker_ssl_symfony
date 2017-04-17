@@ -26,7 +26,7 @@ php:
 mysql:
   image: mysql
   environment:
-    MYSQL_DATABASE: dtg2go
+    MYSQL_DATABASE: {mysql_database} 
     MYSQL_USER: devdb
     MYSQL_PASSWORD: devdb
     MYSQL_ROOT_PASSWORD: t3st1ng
