@@ -1,0 +1,46 @@
+nginx:
+  build: docker/nginx
+  environment:
+    DH_SIZE: 512
+  ports:
+    - "8080:80"
+    - "443:443"
+  links:
+    - php
+    - mysql
+  volumes:
+    - ./:/app
+
+php:
+  build: docker/php-fpm
+  links:
+    - mysql
+    - mailcatcher
+  volumes:
+    - ./:/app
+  working_dir: /app
+  environment:
+    XDEBUG_CONFIG: "remote_host={host_ip}"
+    PHP_IDE_CONFIG: "serverName={server_name}"
+
+mysql:
+  image: mysql
+  environment:
+    MYSQL_DATABASE: dtg2go
+    MYSQL_USER: devdb
+    MYSQL_PASSWORD: devdb
+    MYSQL_ROOT_PASSWORD: t3st1ng
+  ports:
+    - "3306:3306"
+  volumes:
+    - ./docker/mysql/data:/var/lib/mysql
+    - ./docker/mysql_setup/conf:/etc/mysql/conf.d
+    - ./docker/mysql_setup/data:/docker-entrypoint-initdb.d
+
+mailcatcher:
+  image: namshi/smtp
+#  image: exoplatform/smtp
+#    image: yappabe/mailcatcher
+#    ports:
+#        - 1025:1025
+#        - 1080:1080
